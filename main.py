@@ -15,7 +15,6 @@ class SARTApp(BaseApp):
         cfg = AppConfig(
             app_name="Programa SART",
             app_version="2.1.0",
-            about_text="Programa SART\n Versão 2.1.0 \nDesenvolvido por: EOP / SUPCONC",
             login_subtitle="⚠️ Faça Login com os dados do Siafe-Rio2. ⚠️",
             login_user_label="Usuário (CPF):",
             user_max_length=11,
