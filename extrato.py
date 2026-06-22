@@ -232,13 +232,10 @@ def carregar_no_banco_de_dados(df_novos):
             # Nesse caso, a PD deve ser executada por ofício e posteriormente regularizada
             if valor_atual > 1000000 and (tipo_id_atual == 1 or tipo_id_atual == 2):
                 num_doc_valor = "Por Oficio"
-            cursor.execute(
-                '''
-                INSERT INTO contabilizacoes (data, valor, observacao, num_documento, tipo_id, usuario, data_hora, tempo_contab)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                ''', 
-                [row['data'], row['valor'], row['observacao'], num_doc_valor, tipo_id_atual, user, data_hora, None]
-            )
+            cursor.execute('''
+                INSERT INTO contabilizacoes (data, valor, observacao, num_documento, tipo_id, usuario_inclusao, data_hora_inclusao)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', [row['data'], row['valor'], row['observacao'], num_doc_valor, tipo_id_atual, user, data_hora])
             insercoes_feitas += 1
             
         con.commit()
