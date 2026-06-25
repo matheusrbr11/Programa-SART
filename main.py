@@ -207,17 +207,17 @@ class SARTApp(BaseApp):
                 self.after(0, fechar_e_voltar)
                 return
 
-        except (NoSuchElementException, SessionNotCreatedException, InvalidSessionIdException) as e:
+        except (NoSuchElementException, SessionNotCreatedException, InvalidSessionIdException):
             if self.stop_event:
                 return
             logger.error("Ocorreu um erro crítico com o navegador.\nPor favor, reinicie o programa.", exc_info=True)
-            raise e
+            return
 
-        except Exception as e:
+        except Exception:
             if self.stop_event:
                 return
             logger.error("Ocorreu um erro inesperado.", exc_info=True)
-            self.messagebox_error("Erro", f"Ocorreu um erro inesperado: {e}")
+            self.messagebox_error("Erro", f"Ocorreu um erro inesperado.", exc_info=True)
 
         finally:
             self.after(0, self.mostrar_pendentes_popup)
@@ -239,8 +239,8 @@ class SARTApp(BaseApp):
                 df_pend = pd.read_sql_query(
                     "SELECT data, observacao, valor FROM contabilizacoes WHERE num_documento IS NULL", con
                 )
-        except Exception as e:
-            logger.error(f"Erro ao buscar lançamentos pendentes.", exc_info=True)
+        except Exception:
+            logger.error("Erro ao buscar lançamentos pendentes.", exc_info=True)
             return
 
         if df_pend.empty:
