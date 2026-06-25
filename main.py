@@ -1,20 +1,24 @@
 from selenium.common.exceptions import NoSuchElementException, SessionNotCreatedException, InvalidSessionIdException
 import customtkinter as ctk
+from pathlib import Path
 import pandas as pd
 import subprocess
 import threading
+import logging
 import sqlite3
 import os
 
 from eop_ui import AppConfig, BaseApp
-from jupiter import Siafe
+from jupiter import configurar_log, Siafe
+import dicts
 
+logger = logging.getLogger("jupiter.SART")
 
 class SARTApp(BaseApp):
     def __init__(self):
         cfg = AppConfig(
             app_name="Programa SART",
-            app_version="2.1.0",
+            app_version="2.2.0",
             login_subtitle="⚠️ Faça Login com os dados do Siafe-Rio2. ⚠️",
             login_user_label="Usuário (CPF):",
             user_max_length=11,
@@ -30,8 +34,6 @@ class SARTApp(BaseApp):
         self.siafe = Siafe()
         self.stop_event = False
         self.opcao_selecionada = None
-
-        self._inicializar_dicionarios()
 
         self.show_login_frame(on_success=lambda u, s: self.show_config_frame())
 
@@ -139,63 +141,63 @@ class SARTApp(BaseApp):
 
             self.update_progress(valor_barra)
 
-        except Exception as e:
-            self.log(f"Erro ao atualizar banco ID {id}: {e}")
+        except Exception:
+            logger.error(f"Erro ao atualizar banco ID {id}", exc_info=True)
 
     def execucao(self):
         """Lógica de processamento em background"""
         try:
-            self.log("Verificando banco de dados...")
+            logger.info("Verificando banco de dados.")
             if not self.DBPath.exists():
-                self.log("ERRO: Banco de dados não encontrado.")
+                logger.error("Banco de dados não encontrado.", exc_info=True)
                 return
 
             with sqlite3.connect(self.DBPath) as con:
                 if "Guia de Recolhimento" in self.opcao_selecionada:
                     df = pd.read_sql_query("SELECT * FROM contabilizacoes WHERE num_documento IS NULL AND tipo_id IN (1, 3)", con)
-                    dict_map     = self.dict_map_gr
+                    dict_map     = dicts.dict_map_gr
                     metodo_siafe = self.siafe.gerar_documento
                     documento    = self.siafe.gerar_GR
                     tipo_doc     = "Guia de Recolhimento"
 
                 elif "PD de Transferência" in self.opcao_selecionada:
                     df = pd.read_sql_query("SELECT * FROM contabilizacoes WHERE num_documento IS NULL AND tipo_id IN (2, 4, 5)", con)
-                    dict_map     = self.dict_map_pd
+                    dict_map     = dicts.dict_map_pd
                     metodo_siafe = self.siafe.gerar_documento
                     documento    = self.siafe.gerar_PDT
                     tipo_doc     = "PD de Transferência"
                 else:
-                    self.log("Opção inválida.")
+                    logger.warning("Opção inválida.")
                     return
 
             if df.empty:
-                self.log(f"Nenhum lançamento pendente encontrado para {tipo_doc}.")
+                logger.warning(f"Nenhum lançamento pendente encontrado para {tipo_doc}.")
                 self.finalize_progress("Processado... (100%)", "Aviso", "Não há lançamentos pendentes para processar.", "info")
                 self.stop_event = True
                 return
 
-            self.log(f"{len(df)} registros encontrados.")
+            logger.info(f"{len(df)} registros encontrados.")
             self.total_registros = len(df)
             self.registros_processados = 0
 
             self.reset_progress()
 
             self.siafe.abrir_driver()
-            self.log("Iniciando navegador...")
+            logger.info("Iniciando navegador.")
 
             if self.stop_event:
                 return
 
-            self.log("Iniciando Contabilização...")
+            logger.info("Iniciando Contabilização.")
             if self.siafe.logar_siafe(self.siafeVersao, self._usuario, self._senha):
                 sucesso = metodo_siafe(documento, df, dict_map, callback_sucesso=self.atualizar_banco)
 
                 if sucesso:
-                    self.log(">>> Processo concluído com Sucesso! <<<")
+                    logger.info(">>> Processo concluído com Sucesso! <<<")
                     self.finalize_progress("Processado... (100%)", "Sucesso", f"{tipo_doc} contabilizadas com sucesso!", "info")
 
             else:
-                self.log("Falha no login. Verifique suas credenciais.")
+                logger.warning("Falha no login. Verifique suas credenciais.")
                 self.stop_event = True
                 self.siafe.fechar_driver()
 
@@ -208,24 +210,24 @@ class SARTApp(BaseApp):
         except (NoSuchElementException, SessionNotCreatedException, InvalidSessionIdException) as e:
             if self.stop_event:
                 return
-            self.log("Ocorreu um erro crítico com o navegador.\nPor favor, reinicie o programa.")
+            logger.error("Ocorreu um erro crítico com o navegador.\nPor favor, reinicie o programa.", exc_info=True)
             raise e
 
         except Exception as e:
             if self.stop_event:
                 return
-            self.log("Ocorreu um erro inesperado.")
+            logger.error("Ocorreu um erro inesperado.", exc_info=True)
             self.messagebox_error("Erro", f"Ocorreu um erro inesperado: {e}")
 
         finally:
             self.after(0, self.mostrar_pendentes_popup)
             if not self.stop_event:
-                self.log("Fechando navegador...")
+                logger.info("Fechando navegador.")
             if hasattr(self, 'siafe') and self.siafe.driver:
                 self.siafe.fechar_driver()
 
             self.after(3000, self.show_config_frame)
-            self.log("Programa encerrado. Retornando ao menu principal...")
+            logger.info("Programa encerrado. Retornando ao menu principal.")
 
     # =========================================================================
     # POPUP: CONTABILIZAÇÕES PENDENTES
@@ -238,7 +240,7 @@ class SARTApp(BaseApp):
                     "SELECT data, observacao, valor FROM contabilizacoes WHERE num_documento IS NULL", con
                 )
         except Exception as e:
-            self.log(f"Erro ao buscar lançamentos pendentes: {e}")
+            logger.error(f"Erro ao buscar lançamentos pendentes.", exc_info=True)
             return
 
         if df_pend.empty:
@@ -405,104 +407,12 @@ class SARTApp(BaseApp):
         if self.cfg.icon_path.exists():
             popup.after(100, lambda: popup.iconbitmap(str(self.cfg.icon_path)))
 
-    # =========================================================================
-    # DADOS ESTRUTURAIS (DICIONÁRIOS)
-    # =========================================================================
-    def _inicializar_dicionarios(self):
-        # Regra 1 (Padrão)
-        self.dictGR = {
-            "ExtraOrcamentario": True,
-            "TipoDocumento": "Extra-orçamentário",
-            "UG": "999900",
-            "DomicilioBancario": "0000000035",
-            "DomicilioBancarioCompleto": "237 - 6898 - 0000000035",
-            "IEF": "1 - Recursos do Exercício Corrente",
-            "Fonte": "862 - Recursos de Depósitos de Terceiros",
-            "FonteRJ": "081 - Recursos Não Orçamentários - Depósitos de Diversas Origens",
-            "TipoDetalhamentoFonte": "0 - Sem Detalhamento",
-            "Convenio": "000000 - Convênio não identificado",
-            "TipoPatrimonial": "Valores Restituíveis (Cauções e Outros)",
-            "ItemPatrimonial": "4486 - DEPÓSITOS DE TERCEIROS",
-            "OperacaoPatrimonial": "233 - Depósito",
-            "Ano": "2026",
-            "TipoCredor": "UG",
-            "Credor": "999900",
-        }
-        self.dictPD = {
-            "ExtraOrcamentario": False,
-            "UG": "999900",
-            "DomicilioBancarioOrigem": "0000000035",
-            "DomicilioBancarioDestino": "0000000027",
-            "DomicilioBancarioOrigemCompleto": "237 - 6898 - 0000000035",
-            "DomicilioBancarioDestinoCompleto": "237 - 6898 - 0000000027",
-            "IEF": "1 - Recursos do Exercício Corrente",
-            "Fonte": "862 - Recursos de Depósitos de Terceiros",
-            "FonteRJ": "081 - Recursos Não Orçamentários - Depósitos de Diversas Origens",
-            "TipoDetalhamentoFonte": "0 - Sem Detalhamento",
-            "DetalhamentoFonte": "000000 - Sem detalhamento - (862.081)",
-            "Convenio": "000000 - Convênio não identificado",
-            "TipoPatrimonial": "Transferência Financeira entre UG's e na Própria UG",
-            "ItemPatrimonial": "4429 - TRANSFERÊNCIA FINANCEIRA",
-            "OperacaoPatrimonial": "4074 - Transferência financeira entre Contas Bancarias - Na UG",
-        }
-
-        # Regra 2 (Fundo Soberano)
-        self.dictFundoS = {
-            "ExtraOrcamentario": False,
-            "TipoDocumento": "Orçamentário",
-            "UG": "999900",
-            "DomicilioBancario": "0000000035",
-            "DomicilioBancarioCompleto": "237 - 6898 - 0000000035",
-            "IEF": "1 - Recursos do Exercício Corrente",
-            "Fonte": "500 - Recursos não Vinculados de Impostos",
-            "FonteRJ": "100 - Recursos não Vinculados de Impostos - Ordinários Provenientes de Impostos",
-            "TipoDetalhamentoFonte": "0 - Sem Detalhamento",
-            "Convenio": "000000 - Convênio não identificado",
-            "TipoPatrimonial": "Receita de Tributos - IRRF",
-            "ItemPatrimonial": "4776 - IRRF SOBRE OUTROS RENDIMENTOS",
-            "OperacaoPatrimonial": "197 - Reconhecimento, Arrecadação e Recolhimento",
-            "NaturezaReceita": "1113034101 - Imposto sobre a Renda - Retido na Fonte - Outros Rendimentos - Principal",
-        }
-        self.dictPDFundoS100 = {
-            "ExtraOrcamentario": False,
-            "UG": "999900",
-            "DomicilioBancarioOrigem": "0000000035",
-            "DomicilioBancarioDestino": "0000000027",
-            "DomicilioBancarioOrigemCompleto": "237 - 6898 - 0000000035",
-            "DomicilioBancarioDestinoCompleto": "237 - 6898 - 0000000027",
-            "IEF": "1 - Recursos do Exercício Corrente",
-            "Fonte": "500 - Recursos não Vinculados de Impostos",
-            "FonteRJ": "100 - Recursos não Vinculados de Impostos - Ordinários Provenientes de Impostos",
-            "TipoDetalhamentoFonte": "0 - Sem Detalhamento",
-            "DetalhamentoFonte": "000000 - Sem detalhamento - (500.100)",
-            "Convenio": "000000 - Convênio não identificado",
-            "TipoPatrimonial": "Transferência Financeira entre UG's e na Própria UG",
-            "ItemPatrimonial": "4429 - TRANSFERÊNCIA FINANCEIRA",
-            "OperacaoPatrimonial": "4074 - Transferência financeira entre Contas Bancarias - Na UG",
-        }
-        self.dictPDFundoS148 = {
-            "ExtraOrcamentario": False,
-            "UG": "999900",
-            "DomicilioBancarioOrigem": "0000000035",
-            "DomicilioBancarioDestino": "0000000027",
-            "DomicilioBancarioOrigemCompleto": "237 - 6898 - 0000000035",
-            "DomicilioBancarioDestinoCompleto": "237 - 6898 - 0000000027",
-            "IEF": "1 - Recursos do Exercício Corrente",
-            "Fonte": "500 - Recursos não Vinculados de Impostos",
-            "FonteRJ": "148 - Recurs. não Vinculados de Imp .- Ordinários Proven. de Imp. - Emenda Impositiva",
-            "TipoDetalhamentoFonte": "0 - Sem Detalhamento",
-            "DetalhamentoFonte": "000000 - Sem detalhamento - (500.148)",
-            "Convenio": "000000 - Convênio não identificado",
-            "TipoPatrimonial": "Transferência Financeira entre UG's e na Própria UG",
-            "ItemPatrimonial": "4429 - TRANSFERÊNCIA FINANCEIRA",
-            "OperacaoPatrimonial": "4074 - Transferência financeira entre Contas Bancarias - Na UG",
-        }
-
-        self.dict_map_gr = {1: self.dictGR, 3: self.dictFundoS}
-        self.dict_map_pd = {2: self.dictPD, 4: self.dictPDFundoS100, 5: self.dictPDFundoS148}
-
-
 if __name__ == "__main__":
     app = SARTApp()
+    
+    pasta_erros = Path(__file__).parent / "logs"
+    pasta_geral = fr"\\cifs-zone1\tesouro\Programas da SUPCONC\logs\Programa SART"
+    caminho_geral, caminho_erros = configurar_log("Programa SART", pasta_geral, pasta_erros, callback_interface=app.log)
+    
     app.protocol("WM_DELETE_WINDOW", lambda: app.safe_exit(app.limpar_recursos))
     app.mainloop()
