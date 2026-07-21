@@ -32,10 +32,8 @@ import os
 warnings.simplefilter("ignore")
 
 # --- CONFIGURAÇÃO DO AMBIENTE ---
-project_root_directory = Path(__file__).parent
-sys.path.insert(0, str(project_root_directory))
-
-DB_PATH = project_root_directory / "sart.db"
+PROJECT_BASE_PATH = Path(__file__).resolve().parent.parent
+DB_PATH = PROJECT_BASE_PATH / "base de dados" / "sart.db"
 
 # --- LÓGICA DE PROCESSAMENTO ---
 
