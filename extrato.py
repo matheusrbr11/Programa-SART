@@ -25,14 +25,13 @@ import datetime
 import warnings
 import sqlite3
 import tkinter
-import sys
 import os
 
 # Suprimir avisos de versão/formato do Excel
 warnings.simplefilter("ignore")
 
 # --- CONFIGURAÇÃO DO AMBIENTE ---
-PROJECT_BASE_PATH = Path(__file__).resolve().parent.parent
+PROJECT_BASE_PATH = Path(__file__).resolve().parent
 DB_PATH = PROJECT_BASE_PATH / "base de dados" / "sart.db"
 
 # --- LÓGICA DE PROCESSAMENTO ---
