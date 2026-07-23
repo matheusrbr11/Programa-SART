@@ -292,7 +292,7 @@ class SARTApp(BaseApp):
             self.messagebox_error("Erro", f"Ocorreu um erro inesperado.", exc_info=True)
 
         finally:
-            self.after(0, self.mostrar_pendentes_popup("Programa SART", tipo_ids, pagina_inicial="pendentes"))
+            self.after(0, self.mostrar_pendentes_popup("Programa SART", tipo_ids))
             if not self.stop_event:
                 logger.info("Fechando navegador.")
             if hasattr(self, 'siafe') and self.siafe.driver:
@@ -304,11 +304,11 @@ class SARTApp(BaseApp):
     # =========================================================================
     # POPUP: CONTABILIZAÇÕES PENDENTES
     # =========================================================================
-    def mostrar_pendentes_popup(self, programa_nome, tipo_ids, pagina_inicial):
+    def mostrar_pendentes_popup(self, programa_nome, tipo_ids):
 
         # constrói e exibe o popup de consulta ao banco (código em tela_db.py)
         # programa_nome/tipo_ids definem a visão inicial (contabilizados do programa atual)
-        construir_tela_db(self, programa_nome, tipo_ids, pagina_inicial=pagina_inicial)
+        construir_tela_db(self, programa_nome, tipo_ids)
 
 if __name__ == "__main__":
     app = SARTApp()
