@@ -92,3 +92,515 @@ dictPDFundoS148 = {
 
 dict_map_gr = {1: dictGR, 3: dictFundoS}
 dict_map_pd = {2: dictPD, 4: dictPDFundoS100, 5: dictPDFundoS148}
+
+dictPD_API = {
+    "dataEmissao": "",
+    "dataProcesso": "",
+    "dataProgramacao": "",
+    "dataVencimento": "",
+    "codigoUgEmitente": 999900,
+    "codigoUgFavorecida": 999900,
+    "codigoUgPagadora": 999900,
+    "origem": {
+        "classificacao": [
+            {
+                "codigoTipoClassificador": 23,
+                "nomeTipoClassificador": "Identificador Exercício Fonte",
+                "nomeClassificador": "1",
+                "valoresClassificador": [
+                    "1"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 28,
+                "nomeTipoClassificador": "Fonte",
+                "nomeClassificador": "8.62",
+                "valoresClassificador": [
+                    "8",
+                    "62"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 24,
+                "nomeTipoClassificador": "Fonte RJ",
+                "nomeClassificador": "8.62.081",
+                "valoresClassificador": [
+                    "8",
+                    "62",
+                    "081"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 186,
+                "nomeTipoClassificador": "Tipo de Detalhamento de Fonte",
+                "nomeClassificador": "0",
+                "valoresClassificador": [
+                    "0"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 159,
+                "nomeTipoClassificador": "Detalhamento de Fonte",
+                "nomeClassificador": "8.62.081.000000",
+                "valoresClassificador": [
+                    "8",
+                    "62",
+                    "081",
+                    "000000"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 38,
+                "nomeTipoClassificador": "Convênio de Receita",
+                "nomeClassificador": "000000",
+                "valoresClassificador": [
+                    "000000"
+                ]
+            }
+        ],
+        "domicilioBancario": {
+            "bancoCodigo": "237",
+            "agenciaCodigo": "6898",
+            "codigo": "0000000035"
+        }
+    },
+    "destino": {
+        "classificacao": [
+            {
+                "codigoTipoClassificador": 23,
+                "nomeTipoClassificador": "Identificador Exercício Fonte",
+                "nomeClassificador": "1",
+                "valoresClassificador": [
+                    "1"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 28,
+                "nomeTipoClassificador": "Fonte",
+                "nomeClassificador": "8.62",
+                "valoresClassificador": [
+                    "8",
+                    "62"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 24,
+                "nomeTipoClassificador": "Fonte RJ",
+                "nomeClassificador": "8.62.081",
+                "valoresClassificador": [
+                    "8",
+                    "62",
+                    "081"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 186,
+                "nomeTipoClassificador": "Tipo de Detalhamento de Fonte",
+                "nomeClassificador": "0",
+                "valoresClassificador": [
+                    "0"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 159,
+                "nomeTipoClassificador": "Detalhamento de Fonte",
+                "nomeClassificador": "8.62.081.000000",
+                "valoresClassificador": [
+                    "8",
+                    "62",
+                    "081",
+                    "000000"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 38,
+                "nomeTipoClassificador": "Convênio de Receita",
+                "nomeClassificador": "000000",
+                "valoresClassificador": [
+                    "000000"
+                ]
+            }
+        ],
+        "domicilioBancario": {
+            "bancoCodigo": "237",
+            "agenciaCodigo": "6898",
+            "codigo": "0000000027"
+        }
+    },
+    "competencia": "",
+    "itens": [
+        {
+            "classificadores": [
+                {
+                    "codigoTipoClassificador": 116,
+                    "nomeTipoClassificador": "Tipo Patrimonial",
+                    "nomeClassificador": "198",
+                    "valoresClassificador": [
+                        "198"
+                    ]
+                },
+                {
+                    "codigoTipoClassificador": 109,
+                    "nomeTipoClassificador": "Item Patrimonial",
+                    "nomeClassificador": "4429",
+                    "valoresClassificador": [
+                        "4429"
+                    ]
+                },
+                {
+                    "codigoTipoClassificador": 115,
+                    "nomeTipoClassificador": "Operação Patrimonial",
+                    "nomeClassificador": "4074",
+                    "valoresClassificador": [
+                        "4074"
+                    ]
+                }
+                
+            ],
+            "valor": ""
+        }
+    ],
+    "observacao": ""
+}
+
+dictPDFundoS100_API = {
+    "dataEmissao": "",
+    "dataProcesso": "",
+    "dataProgramacao": "",
+    "dataVencimento": "",
+    "codigoUgEmitente": 999900,
+    "codigoUgFavorecida": 999900,
+    "codigoUgPagadora": 999900,
+    "origem": {
+        "classificacao": [
+            {
+                "codigoTipoClassificador": 23,
+                "nomeTipoClassificador": "Identificador Exercício Fonte",
+                "nomeClassificador": "1",
+                "valoresClassificador": [
+                    "1"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 28,
+                "nomeTipoClassificador": "Fonte",
+                "nomeClassificador": "5.00",
+                "valoresClassificador": [
+                    "5",
+                    "00"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 24,
+                "nomeTipoClassificador": "Fonte RJ",
+                "nomeClassificador": "5.00.100",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "100"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 186,
+                "nomeTipoClassificador": "Tipo de Detalhamento de Fonte",
+                "nomeClassificador": "0",
+                "valoresClassificador": [
+                    "0"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 159,
+                "nomeTipoClassificador": "Detalhamento de Fonte",
+                "nomeClassificador": "5.00.100.000000",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "100",
+                    "000000"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 38,
+                "nomeTipoClassificador": "Convênio de Receita",
+                "nomeClassificador": "000000",
+                "valoresClassificador": [
+                    "000000"
+                ]
+            }
+        ],
+        "domicilioBancario": {
+            "bancoCodigo": "237",
+            "agenciaCodigo": "6898",
+            "codigo": "0000000035"
+        }
+    },
+    "destino": {
+        "classificacao": [
+            {
+                "codigoTipoClassificador": 23,
+                "nomeTipoClassificador": "Identificador Exercício Fonte",
+                "nomeClassificador": "1",
+                "valoresClassificador": [
+                    "1"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 28,
+                "nomeTipoClassificador": "Fonte",
+                "nomeClassificador": "5.00",
+                "valoresClassificador": [
+                    "5",
+                    "00"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 24,
+                "nomeTipoClassificador": "Fonte RJ",
+                "nomeClassificador": "5.00.100",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "100"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 186,
+                "nomeTipoClassificador": "Tipo de Detalhamento de Fonte",
+                "nomeClassificador": "0",
+                "valoresClassificador": [
+                    "0"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 159,
+                "nomeTipoClassificador": "Detalhamento de Fonte",
+                "nomeClassificador": "5.00.100.000000",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "100",
+                    "000000"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 38,
+                "nomeTipoClassificador": "Convênio de Receita",
+                "nomeClassificador": "000000",
+                "valoresClassificador": [
+                    "000000"
+                ]
+            }
+        ],
+        "domicilioBancario": {
+            "bancoCodigo": "237",
+            "agenciaCodigo": "6898",
+            "codigo": "0000000027"
+        }
+    },
+    "competencia": "",
+    "itens": [
+        {
+            "classificadores": [
+                {
+                    "codigoTipoClassificador": 116,
+                    "nomeTipoClassificador": "Tipo Patrimonial",
+                    "nomeClassificador": "198",
+                    "valoresClassificador": [
+                        "198"
+                    ]
+                },
+                {
+                    "codigoTipoClassificador": 109,
+                    "nomeTipoClassificador": "Item Patrimonial",
+                    "nomeClassificador": "4429",
+                    "valoresClassificador": [
+                        "4429"
+                    ]
+                },
+                {
+                    "codigoTipoClassificador": 115,
+                    "nomeTipoClassificador": "Operação Patrimonial",
+                    "nomeClassificador": "4074",
+                    "valoresClassificador": [
+                        "4074"
+                    ]
+                }
+                
+            ],
+            "valor": ""
+        }
+    ],
+    "observacao": ""
+}
+
+dictPDFundoS148_API = {
+    "dataEmissao": "",
+    "dataProcesso": "",
+    "dataProgramacao": "",
+    "dataVencimento": "",
+    "codigoUgEmitente": 999900,
+    "codigoUgFavorecida": 999900,
+    "codigoUgPagadora": 999900,
+    "origem": {
+        "classificacao": [
+            {
+                "codigoTipoClassificador": 23,
+                "nomeTipoClassificador": "Identificador Exercício Fonte",
+                "nomeClassificador": "1",
+                "valoresClassificador": [
+                    "1"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 28,
+                "nomeTipoClassificador": "Fonte",
+                "nomeClassificador": "5.00",
+                "valoresClassificador": [
+                    "5",
+                    "00"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 24,
+                "nomeTipoClassificador": "Fonte RJ",
+                "nomeClassificador": "5.00.148",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "148"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 186,
+                "nomeTipoClassificador": "Tipo de Detalhamento de Fonte",
+                "nomeClassificador": "0",
+                "valoresClassificador": [
+                    "0"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 159,
+                "nomeTipoClassificador": "Detalhamento de Fonte",
+                "nomeClassificador": "5.00.148.000000",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "148",
+                    "000000"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 38,
+                "nomeTipoClassificador": "Convênio de Receita",
+                "nomeClassificador": "000000",
+                "valoresClassificador": [
+                    "000000"
+                ]
+            }
+        ],
+        "domicilioBancario": {
+            "bancoCodigo": "237",
+            "agenciaCodigo": "6898",
+            "codigo": "0000000035"
+        }
+    },
+    "destino": {
+        "classificacao": [
+            {
+                "codigoTipoClassificador": 23,
+                "nomeTipoClassificador": "Identificador Exercício Fonte",
+                "nomeClassificador": "1",
+                "valoresClassificador": [
+                    "1"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 28,
+                "nomeTipoClassificador": "Fonte",
+                "nomeClassificador": "5.00",
+                "valoresClassificador": [
+                    "5",
+                    "00"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 24,
+                "nomeTipoClassificador": "Fonte RJ",
+                "nomeClassificador": "5.00.148",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "148"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 186,
+                "nomeTipoClassificador": "Tipo de Detalhamento de Fonte",
+                "nomeClassificador": "0",
+                "valoresClassificador": [
+                    "0"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 159,
+                "nomeTipoClassificador": "Detalhamento de Fonte",
+                "nomeClassificador": "5.00.148.000000",
+                "valoresClassificador": [
+                    "5",
+                    "00",
+                    "148",
+                    "000000"
+                ]
+            },
+            {
+                "codigoTipoClassificador": 38,
+                "nomeTipoClassificador": "Convênio de Receita",
+                "nomeClassificador": "000000",
+                "valoresClassificador": [
+                    "000000"
+                ]
+            }
+        ],
+        "domicilioBancario": {
+            "bancoCodigo": "237",
+            "agenciaCodigo": "6898",
+            "codigo": "0000000027"
+        }
+    },
+    "competencia": "",
+    "itens": [
+        {
+            "classificadores": [
+                {
+                    "codigoTipoClassificador": 116,
+                    "nomeTipoClassificador": "Tipo Patrimonial",
+                    "nomeClassificador": "198",
+                    "valoresClassificador": [
+                        "198"
+                    ]
+                },
+                {
+                    "codigoTipoClassificador": 109,
+                    "nomeTipoClassificador": "Item Patrimonial",
+                    "nomeClassificador": "4429",
+                    "valoresClassificador": [
+                        "4429"
+                    ]
+                },
+                {
+                    "codigoTipoClassificador": 115,
+                    "nomeTipoClassificador": "Operação Patrimonial",
+                    "nomeClassificador": "4074",
+                    "valoresClassificador": [
+                        "4074"
+                    ]
+                }
+                
+            ],
+            "valor": ""
+        }
+    ],
+    "observacao": ""
+}
+
+dict_map_pd_API = {2: dictPD_API, 4: dictPDFundoS100_API, 5: dictPDFundoS148_API}
