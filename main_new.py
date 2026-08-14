@@ -273,7 +273,7 @@ class SARTApp(BaseApp):
 
             # login falhou: limpa credenciais e devolve o usuário pra tela de login
             if not logado:
-                logger.warning("Falha no login. Verifique suas credenciais")
+                logger.warning("Falha no login. Verifique suas credenciais.")
                 self.stop_event = True
                 self.retorno_automatico = False
                 if hasattr(self, 'siafe') and self.siafe.driver:
@@ -297,7 +297,7 @@ class SARTApp(BaseApp):
             )
 
             if sucesso:
-                logger.info(">>> Processo concluído com Sucesso!")
+                logger.info(">>> Processo concluído com Sucesso! <<<")
                 self.finalize_progress("Processado... (100%)", "Sucesso", f"{tipo_doc} contabilizadas com sucesso!", "info")
 
         except (NoSuchElementException, SessionNotCreatedException, InvalidSessionIdException):
@@ -316,8 +316,11 @@ class SARTApp(BaseApp):
             self.after(0, self.mostrar_pendentes_popup("Programa SART", tipo_ids))
             if not self.stop_event:
                 logger.info("Fechando navegador.")
-            if hasattr(self, 'siafe') and self.siafe.driver:
-                self.siafe.fechar_driver()
+
+            try:
+                if hasattr(self, 'siafe') and self.siafe.driver:
+                    self.siafe.fechar_driver()
+            except: pass
                 
             if self.retorno_automatico:
                 self.after(5000, self.show_config_frame)
