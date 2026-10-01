@@ -7,7 +7,6 @@ import threading
 import traceback
 import logging
 import sqlite3
-import copy
 import json
 import os
 
@@ -53,7 +52,7 @@ class SARTApp(BaseApp):
         )
         super().__init__(cfg)
 
-        self.siafeVersao = 2          # 1 = Prod | 2 = Beta
+        self.siafeVersao = 1          # 1 = Prod | 2 = Beta
         
         self.DBPath = self.cfg.base_path / "base de dados" / "sart.db"
         self.ExtratoPath = self.cfg.base_path / "extrato.py"
@@ -61,7 +60,6 @@ class SARTApp(BaseApp):
         self.siafe = Siafe()             # controla o navegador/sessão do siafe
         self.stop_event = False          # vira True quando o usuário cancela a rotina
         self.opcao_selecionada = None    # tipo de contabilização escolhido no combo
-        self.retorno_automatico = True   # se True, volta sozinho pra tela anterior ao terminar
         
         self.graph = None                # GraphAPI; definido em __main__ após configurar_log
         self.dev_emails = []             # destinatários do e-mail de erro
@@ -225,24 +223,21 @@ class SARTApp(BaseApp):
             if not self.DBPath.exists():
                 logger.error("Banco de dados não encontrado.", exc_info=True)
                 return
-            
-            dict_map = {}
-            via_api = False
 
             with sqlite3.connect(self.DBPath) as con:
                 if "Guia de Recolhimento" in self.opcao_selecionada:
                     df = pd.read_sql_query("SELECT * FROM contabilizacoes WHERE num_documento IS NULL AND tipo_id IN (1, 3)", con)
-                    dict_map     = dicts.dict_map_gr_API
-                    documento    = self.siafe.gerar_GR_API
+                    dict_map     = dicts.dict_map_gr
+                    metodo_siafe = self.siafe.gerar_documento
+                    documento    = self.siafe.gerar_GR
                     tipo_doc     = "Guia de Recolhimento"
-                    via_api      = True
 
                 elif "PD de Transferência" in self.opcao_selecionada:
                     df = pd.read_sql_query("SELECT * FROM contabilizacoes WHERE num_documento IS NULL AND tipo_id IN (2, 4, 5)", con)
-                    dict_map     = dicts.dict_map_pd_API
-                    documento    = self.siafe.gerar_PDT_API
+                    dict_map     = dicts.dict_map_pd
+                    metodo_siafe = self.siafe.gerar_documento
+                    documento    = self.siafe.gerar_PDT
                     tipo_doc     = "PD de Transferência"
-                    via_api      = True
                 else:
                     logger.warning("Opção inválida.")
                     return
@@ -258,47 +253,31 @@ class SARTApp(BaseApp):
             self.registros_processados = 0
 
             self.reset_progress()
-            
-            # faz o login: via api quando for pdt, senão abre o navegador de verdade
-            if via_api:
-                logado = self.siafe.logar_siafe_API(self.siafeVersao, self._usuario, self._senha)
+
+            self.siafe.abrir_driver()
+            logger.info("Iniciando navegador.")
+
+            if self.stop_event:
+                return
+
+            logger.info("Iniciando Contabilização.")
+            if self.siafe.logar_siafe(self.siafeVersao, self._usuario, self._senha):
+                sucesso = metodo_siafe(documento, df, dict_map, callback_sucesso=self.atualizar_banco)
+
+                if sucesso:
+                    logger.info(">>> Processo concluído com Sucesso! <<<")
+                    self.finalize_progress("Processado... (100%)", "Sucesso", f"{tipo_doc} contabilizadas com sucesso!", "info")
+
             else:
-                logger.info("Iniciando navegador")
-                self.siafe.abrir_driver()
-
-                if self.stop_event: return
-
-                logger.info("Iniciando Contabilização")
-                logado = self.siafe.logar_siafe(self.siafeVersao, self._usuario, self._senha)
-
-            # login falhou: limpa credenciais e devolve o usuário pra tela de login
-            if not logado:
                 logger.warning("Falha no login. Verifique suas credenciais.")
                 self.stop_event = True
-                self.retorno_automatico = False
-                if hasattr(self, 'siafe') and self.siafe.driver:
-                    self.siafe.fechar_driver()
+                self.siafe.fechar_driver()
 
                 def fechar_e_voltar():
                     self.finalize_progress(label="Falha no Login")
-                    self._usuario = ""
-                    self._senha = ""
                     self.show_login_frame(on_success=lambda u, s: self.show_config_frame())
                 self.after(0, fechar_e_voltar)
                 return
-
-            # gera os documentos no siafe; a cada sucesso, atualizar_banco é chamado
-            # deepcopy pra cada rodada não sujar o dicionário original
-            sucesso = self.siafe.gerar_documento(
-                funcao=documento,
-                df=df,
-                dict_map=copy.deepcopy(dict_map),
-                callback_sucesso=self.atualizar_banco
-            )
-
-            if sucesso:
-                logger.info(">>> Processo concluído com Sucesso! <<<")
-                self.finalize_progress("Processado... (100%)", "Sucesso", f"{tipo_doc} contabilizadas com sucesso!", "info")
 
         except (NoSuchElementException, SessionNotCreatedException, InvalidSessionIdException):
             if self.stop_event:
@@ -316,15 +295,11 @@ class SARTApp(BaseApp):
             self.after(0, self.mostrar_pendentes_popup("Programa SART", tipo_ids))
             if not self.stop_event:
                 logger.info("Fechando navegador.")
+            if hasattr(self, 'siafe') and self.siafe.driver:
+                self.siafe.fechar_driver()
 
-            try:
-                if hasattr(self, 'siafe') and self.siafe.driver:
-                    self.siafe.fechar_driver()
-            except: pass
-                
-            if self.retorno_automatico:
-                self.after(5000, self.show_config_frame)
-                logger.info("Programa encerrado. Retornando ao menu principal.")
+            self.after(5000, self.show_config_frame)
+            logger.info("Programa encerrado. Retornando ao menu principal.")
 
     # =========================================================================
     # POPUP: CONTABILIZAÇÕES PENDENTES
