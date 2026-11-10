@@ -496,7 +496,8 @@ dictPD_API = {
             "valor": ""
         }
     ],
-    "observacao": ""
+    "observacao": "",
+    "contabiliza": "true"
 }
 
 dictPDFundoS100_API = {
@@ -666,7 +667,8 @@ dictPDFundoS100_API = {
             "valor": ""
         }
     ],
-    "observacao": ""
+    "observacao": "",
+    "contabiliza": "true"
 }
 
 dictPDFundoS148_API = {
@@ -836,7 +838,8 @@ dictPDFundoS148_API = {
             "valor": ""
         }
     ],
-    "observacao": ""
+    "observacao": "",
+    "contabiliza": "true"
 }
 
 dict_map_pd_API = {2: dictPD_API, 4: dictPDFundoS100_API, 5: dictPDFundoS148_API}
