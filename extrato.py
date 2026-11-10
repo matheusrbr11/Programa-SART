@@ -46,7 +46,7 @@ def processar_arquivo_xls(caminho_arquivo):
     
     Regras de Negócio Aplicadas:
         - Regra 1 (IDs 1, 2): Lançamentos padrões.
-        - Regra 2 (IDs 3, 4, 5): Lançamentos identificados como "FUNDO S".
+        - Regra 2 (IDs 3, 4, 5): Lançamentos identificados como "FUNDO S" ou "PROPAG".
 
     Args:
         caminho_arquivo (str): O caminho absoluto para o arquivo .xls a ser processado.
@@ -125,7 +125,8 @@ def processar_arquivo_xls(caminho_arquivo):
         if valor_float <= 0:
             continue
 
-        is_fundo_s = "FUNDO S" in observacao_base.upper()
+        observacao_upper = observacao_base.upper()
+        is_fundo_s = "FUNDO S" in observacao_upper or "PROPAG" in observacao_upper
 
         if is_fundo_s:
             # REGRA 2
