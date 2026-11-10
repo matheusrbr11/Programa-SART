@@ -109,7 +109,7 @@ def processar_arquivo_xls(caminho_arquivo):
             except:
                 numDoc = str(dcto_bruto).strip()
 
-        observacao_final = f"{observacao_base} ({numDoc})"
+        observacao_doc = f"{observacao_base} ({numDoc})"
 
         valor_float = 0.0
         if not (pd.isna(valor_bruto) or valor_bruto == ''):
@@ -136,23 +136,22 @@ def processar_arquivo_xls(caminho_arquivo):
             lista_regras = [1, 2]
 
         for tipo_id in lista_regras:
-            
             # Observações
             match tipo_id:
                 case 1:
-                    observacao_final = "DEPÓSITO CONFORME EXTRATO BANCÁRIO, REGISTRADO EM DDO A PRIORI, PARA POSTERIOR RECLASSIFICAÇÃO. \n\n" + f"{observacao_final}" # GR 
+                    observacao_final = "DEPÓSITO CONFORME EXTRATO BANCÁRIO, REGISTRADO EM DDO A PRIORI, PARA POSTERIOR RECLASSIFICAÇÃO. \n\n" + observacao_doc # GR 
                     valor_float_ajustado = valor_float             
                 case 2:
-                    observacao_final = "REGISTRO DA TRANSFERÊNCIA DOS RECURSOS DE RECEITA EXTRAORÇAMENTÁRIA DEPOSITADOS NA CONTA 35 À CUTE. \n\n" + f"{observacao_final}" # PD
+                    observacao_final = "REGISTRO DA TRANSFERÊNCIA DOS RECURSOS DE RECEITA EXTRAORÇAMENTÁRIA DEPOSITADOS NA CONTA 35 À CUTE. \n\n" + observacao_doc # PD
                     valor_float_ajustado = valor_float
                 case 3:
-                    observacao_final = "REGISTRO DO RECOLHIMENTO DE RECURSOS DE RECEITA ORÇAMENTÁRIA REFERENTES A IRRF SOBRE OUTROS RENDIMENTOS. \n\n" + f"{observacao_final}" # GR Fundo S
+                    observacao_final = "REGISTRO DO RECOLHIMENTO DE RECURSOS DE RECEITA ORÇAMENTÁRIA REFERENTES A IRRF SOBRE OUTROS RENDIMENTOS. \n\n" + observacao_doc # GR Fundo S
                     valor_float_ajustado = valor_float
                 case 4:
-                    observacao_final = "REGISTRO DA TRANSFERÊNCIA DOS RECURSOS DE RECEITA ORÇAMENTÁRIA DEPOSITADOS NA CONTA 35 À CUTE. \n\n" + f"{observacao_final}" # PD Fundo S 100
+                    observacao_final = "REGISTRO DA TRANSFERÊNCIA DOS RECURSOS DE RECEITA ORÇAMENTÁRIA DEPOSITADOS NA CONTA 35 À CUTE. \n\n" + observacao_doc # PD Fundo S 100
                     valor_float_ajustado = valor_float * 0.995
                 case 5:
-                    observacao_final = "REGISTRO DA TRANSFERÊNCIA DOS RECURSOS DE EMENDA IMPOSITIVA REFERENTE A RECEITA ORÇAMENTÁRIA DE TRIBUTOS - IRRF DEPOSITADOS NA CONTA 35 À CUTE. \n\n" + f"{observacao_final}" # PD Fundo S 148
+                    observacao_final = "REGISTRO DA TRANSFERÊNCIA DOS RECURSOS DE EMENDA IMPOSITIVA REFERENTE A RECEITA ORÇAMENTÁRIA DE TRIBUTOS - IRRF DEPOSITADOS NA CONTA 35 À CUTE. \n\n" + observacao_doc # PD Fundo S 148
                     valor_float_ajustado = valor_float * 0.005
             
             item = {
